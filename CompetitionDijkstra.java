@@ -17,13 +17,18 @@
 
 public class CompetitionDijkstra {
 
+	int sA,sB,sC;
+	String filename;
     /**
      * @param filename: A filename containing the details of the city road network
      * @param sA, sB, sC: speeds for 3 contestants
     */
     CompetitionDijkstra (String filename, int sA, int sB, int sC){
-
-       //TODO
+    	//setting up the constructor
+    	this.sA=sA;
+    	this.sB=sB;
+    	this.sC=sC;
+    	this.filename=filename;
     }
 
 
@@ -31,7 +36,9 @@ public class CompetitionDijkstra {
     * @return int: minimum minutes that will pass before the three contestants can meet
      */
     public int timeRequiredforCompetition(){
-
+    	//if the speed is out or range return -1
+    	if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sB>100))
+    		return -1;
         //TO DO
         return -1;
     }
