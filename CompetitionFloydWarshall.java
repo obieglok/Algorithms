@@ -130,15 +130,15 @@ public class CompetitionFloydWarshall {
 			}
 		}
 		double maximumDistance=getMax();
-		System.out.println("slowrst"+slowest + " maxdist" + maximumDistance);
-		System.out.println("max distnace"+(maximumDistance*1000)/slowest);
+	//	System.out.println("slowrst"+slowest + " maxdist" + maximumDistance);
+		//System.out.println("max distnace"+(maximumDistance*1000)/slowest);
 		if(maximumDistance == INFINITY)
 		{
-			System.out.println("shouldnt be hee");
+	//		System.out.println("shouldnt be hee");
 			return -1;
 		}
 		maximumDistance=maximumDistance*1000;
-		System.out.println("maximumDistanceAttheEnd");
+	//	System.out.println("maximumDistanceAttheEnd");
 		return (int)Math.ceil(maximumDistance/slowest);
 	}
 	public double getMax()

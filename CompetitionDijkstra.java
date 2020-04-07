@@ -53,6 +53,7 @@ public class CompetitionDijkstra {
 		slowest=Math.min(sA,sB);
 		slowest=Math.min(slowest, sC);
 		//read in input and assign the table values
+		
 		map=new TreeMap<>();
 		//FileReader file;
 		try {
@@ -78,7 +79,7 @@ public class CompetitionDijkstra {
 						String[] lineOutput=input.trim().split(" ");
 						int vertexA=Integer.parseInt(lineOutput[0]);
 						int vertexB= Integer.parseInt(lineOutput[1]);
-						double distance=Integer.parseInt(lineOutput[2]);
+						double distance=Double.parseDouble(lineOutput[2]) *1000;
 						Node node1,node2;
 						
 						if(map.get(vertexA)==null)
@@ -135,9 +136,12 @@ public class CompetitionDijkstra {
         for (Node node : map.values()) {
             double distance = getMaxCost(node.id);
             if (distance == Double.MAX_VALUE) return -1;
+            
             maxDistance = Math.max(maxDistance, distance);
         }
+        System.out.println(maxDistance + "hereee");
         int maximumDistance=(int) Math.ceil(maxDistance / slowest);
+        System.out.println("maximumDistance" + maximumDistance);
         return  maximumDistance;
     }
 
