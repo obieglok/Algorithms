@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +7,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
+//@Author Klaudia Obieglo, discussed with Kamil Przepiorski,
+// Looked at github repos and the Alogrithms Book
 /*
  * A Contest to Meet (ACM) is a reality TV contest that sets three contestants at three random
  * city intersections. In order to win, the three contestants need all to meet at any intersection
@@ -30,15 +30,15 @@ public class CompetitionDijkstra {
 	private static final double INFINITY = Integer.MAX_VALUE; 
 	int sA,sB,sC;
 	String filename;
-	int slowest,intersections,streets;
+	int intersections,streets,slowest;
 	private TreeMap<Integer,Node> map;
-	
+	boolean file=true;
 	/**
      * @param filename: A filename containing the details of the city road network
      * @param sA, sB, sC: speeds for 3 contestants
-     * @throws IOException 
+     * 
     */
-    CompetitionDijkstra (String filename, int sA, int sB, int sC) throws IOException{
+    CompetitionDijkstra (String filename, int sA, int sB, int sC){
     	//setting up the constructor
     	this.sA=sA;
     	this.sB=sB;
@@ -48,26 +48,28 @@ public class CompetitionDijkstra {
     }
     
 
-	public void initialise() throws IOException
+	public void initialise()
 	{
+		slowest=Math.min(sA,sB);
+		slowest=Math.min(slowest, sC);
 		//read in input and assign the table values
 		map=new TreeMap<>();
-		FileReader file;
+		//FileReader file;
 		try {
-			file = new FileReader("C:\\Users\\klaud\\eclipse-workspace\\Graphs\\1000EWD.txt");
-			BufferedReader reader = new BufferedReader(file);
+			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			String input =reader.readLine();
 			intersections = Integer.parseInt(input);
 			input=reader.readLine();
 			streets=Integer.parseInt(input);
 			if(streets==0 || intersections==0)
 			{
-				filename=null;
+				file=false;;
+				slowest=-1;
 			}
 			else {
 				
 				boolean endOfFile=false;
-				while(!endOfFile)
+				while(!endOfFile )
 				{
 					input=reader.readLine();
 					if(input!=null)
@@ -104,14 +106,18 @@ public class CompetitionDijkstra {
 					
 					else 
 					{
-						filename=null;
+						//filename=null;
 						endOfFile=true;
 					}
-					reader.close();
+					
 				}
+				reader.close();
 			}
-		} catch (FileNotFoundException e) {
-			filename=null;
+		} catch (Exception e) {
+			//filename=null;
+			//System.out.println("excep");
+			slowest=-1;
+			file=false;
 			e.printStackTrace();
 		}
 	}
@@ -119,27 +125,27 @@ public class CompetitionDijkstra {
     * @return int: minimum minutes that will pass before the three contestants can meet
      */
     public int timeRequiredforCompetition(){
-		slowest=Math.min(sA,sB);
-		slowest=Math.min(slowest, sC);
+
     	//if the speed is out or range return -1
-    	if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sB>100)||filename ==null)
+    	if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sB>100)||file==false || map.size()==0)
     		return -1;
     	
-    	if (map.size() == 0 || slowest <= 0) return -1;
-        double maxDist = -1;
+        double maxDistance = -1;
+        //find the max distance 
         for (Node node : map.values()) {
-            double dist = getMaxCost(node.id);
-            if (dist == Double.MAX_VALUE) return -1;
-            maxDist = Math.max(maxDist, dist);
+            double distance = getMaxCost(node.id);
+            if (distance == Double.MAX_VALUE) return -1;
+            maxDistance = Math.max(maxDistance, distance);
         }
-        return (int) Math.ceil(maxDist / slowest);
+        int maximumDistance=(int) Math.ceil(maxDistance / slowest);
+        return  maximumDistance;
     }
 
     private class Node {
         int id;
         double cost = Double.MAX_VALUE; //tentative cost
         ArrayList<Path> paths = new ArrayList<>();
-
+        
         Node(int id) {
             this.id = id;
         }
@@ -150,11 +156,11 @@ public class CompetitionDijkstra {
     }
 
     private class Path {
-        Node dest;
+        Node destination;
         double cost;
 
-        Path(Node dest, double cost) {
-            this.dest = dest;
+        Path(Node destination, double cost) {
+            this.destination = destination;
             this.cost = cost;
         }
     }
@@ -169,11 +175,11 @@ public class CompetitionDijkstra {
         }
 
         for (int i = 0; i < map.values().size(); i++) {
-            for (Node node : nodes) {  //Node node : nodes
+            for (Node node : nodes) {  
                 for (Path path : node.paths) {
                     double newCost = node.cost + path.cost;
-                    if (newCost < path.dest.cost) {
-                        path.dest.cost = newCost;
+                    if (newCost < path.destination.cost) {
+                        path.destination.cost = newCost;
                     }
                 }
             }

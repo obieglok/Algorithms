@@ -1,8 +1,5 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-
 /*
  * A Contest to Meet (ACM) is a reality TV contest that sets three contestants at three random
  * city intersections. In order to win, the three contestants need all to meet at any intersection
@@ -26,13 +23,14 @@ public class CompetitionFloydWarshall {
 	String filename;
 	int intersections,streets,slowest;
 	double table[][];
+	boolean validFile=true;
 	private static final double INFINITY = Integer.MAX_VALUE; 
 	/**
 	 * @param filename: A filename containing the details of the city road network
 	 * @param sA, sB, sC: speeds for 3 contestants
-	 * @throws IOException 
+	 
 	 */
-	CompetitionFloydWarshall (String filename, int sA, int sB, int sC) throws IOException{
+	CompetitionFloydWarshall (String filename, int sA, int sB, int sC){
 		//setting up the constructor
 		this.filename=filename;
 		this.sA=sA;
@@ -42,88 +40,105 @@ public class CompetitionFloydWarshall {
 
 	}
 
-	public void initalise() throws IOException
+	public void initalise()
 	{
 		//read in input and assign the table values
-		FileReader file;
+		//System.out.print("w");
+		slowest=Math.min(sA,sB);
+		slowest=Math.min(slowest, sC);
 		try {
-			file = new FileReader("C:\\Users\\klaud\\eclipse-workspace\\Graphs\\1000EWD.txt");
-			BufferedReader reader = new BufferedReader(file);
+			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			String input =reader.readLine();
+			System.out.println("hello");
 			intersections = Integer.parseInt(input);
+			System.out.println(intersections);
+			input =reader.readLine();
 			streets=Integer.parseInt(input);
+			System.out.println(streets);
 			if(streets==0 || intersections==0)
 			{
-				filename=null;
+				validFile=false;
+				slowest=-1;
 			}
 			else {
 				table=new double[intersections][intersections];
 
 				for(int i=0; i<intersections; i++)
 				{
-					for(int j=0; i<intersections; j++)
+					for(int j=0; j<intersections; j++)
 					{
 						//if i=j put in 0, everything else is infinity for the moment
 						if(i==j)
 						{
 							table[i][j]=0;
 						}
-						else
-						{
+						else {
+							 
 							table[i][j]=INFINITY;
 						}
+						
 					}
 				}
 				boolean endOfFile=false;
-				while(!endOfFile)
+				input=reader.readLine();
+				while(!endOfFile )
 				{
 					if(input!=null)
 					{
 						//put in the distance into the grids
 						String[] lineOutput=input.trim().split(" ");
 						table[Integer.parseInt(lineOutput[0])][Integer.parseInt(lineOutput[1])]=Double.parseDouble(lineOutput[2]);
+						input=reader.readLine();
 					}
 					else 
 					{
-						filename=null;
+						
 						endOfFile=true;
 					}
-					reader.close();
+					
 				}
+				reader.close();
 			}
-		} catch (FileNotFoundException e) {
-			filename=null;
+		} catch (Exception e) {
+			validFile=false;
+			slowest=-1;
+			
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//e.printStackTrace();
+		}  
+		
+
 	}
 
 	/**
 	 * @return int: minimum minutes that will pass before the three contestants can meet
 	 */
 	public int timeRequiredforCompetition(){
-		slowest=Math.min(sA,sB);
-		slowest=Math.min(slowest, sC);
+
 		//if the speed is out or range  or file is null return -1
-		if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sB>100) ||filename==null)
+		if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sB>100) || validFile==false)
 			return -1;
 
 		//floydWarshall Algorithm
 		for (int i = 0; i < intersections; i++){
-			for (int j = 0; j < intersections; j++){
+			for (int j = 0; j < intersections; j++){ 
 				for (int k = 0; k < intersections; k++){
 					if(table[j][i] + table[i][k] < table[j][k]){
-						table[j][k] = table[j][i] + table[i][j];
+						table[j][k] = table[j][i] + table[i][k];
 					}
 				}
 			}
 		}
 		double maximumDistance=getMax();
-		if(maximumDistance ==INFINITY || maximumDistance== -1)
+		System.out.println("slowrst"+slowest + " maxdist" + maximumDistance);
+		System.out.println("max distnace"+(maximumDistance*1000)/slowest);
+		if(maximumDistance == INFINITY)
 		{
+			System.out.println("shouldnt be hee");
 			return -1;
 		}
 		maximumDistance=maximumDistance*1000;
+		System.out.println("maximumDistanceAttheEnd");
 		return (int)Math.ceil(maximumDistance/slowest);
 	}
 	public double getMax()
