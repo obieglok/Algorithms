@@ -52,6 +52,7 @@ public class CompetitionDijkstra {
 	{
 		slowest=Math.min(sA,sB);
 		slowest=Math.min(slowest, sC);
+		
 		//read in input and assign the table values
 		
 		map=new TreeMap<>();
