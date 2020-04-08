@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
-//@Author Klaudia Obieglo, discussed with Kamil Przepiorski,
-// Looked at github repos and the Alogrithms Book
+//@Author Klaudia Obieglo, discussed with the demonstrator Kamil Przepiorski,
+// Looked at github repos, aglorithm book ,stack overflow
 /*
  * A Contest to Meet (ACM) is a reality TV contest that sets three contestants at three random
  * city intersections. In order to win, the three contestants need all to meet at any intersection
@@ -30,41 +30,33 @@ public class CompetitionDijkstra {
 	private static final double INFINITY = Integer.MAX_VALUE; 
 	int sA,sB,sC;
 	String filename;
-	int intersections,streets,slowest,fastest;
+	int intersections,streets,slowest;
 	private TreeMap<Integer,Node> map;
 	boolean file=true;
 	/**
-     * @param filename: A filename containing the details of the city road network
-     * @param sA, sB, sC: speeds for 3 contestants
-     * 
-    */
-    CompetitionDijkstra (String filename, int sA, int sB, int sC){
-    	//setting up the constructor
-    	this.sA=sA;
-    	this.sB=sB;
-    	this.sC=sC;
-    	this.filename=filename;
-    	this.initialise();
-    }
-    
+	 * @param filename: A filename containing the details of the city road network
+	 * @param sA, sB, sC: speeds for 3 contestants
+	 * 
+	 */
+	CompetitionDijkstra (String filename, int sA, int sB, int sC){
+		//setting up the constructor
+		this.sA=sA;
+		this.sB=sB;
+		this.sC=sC;
+		this.filename=filename;
+		this.initialise();
+	}
+
 
 	public void initialise()
 	{
-		fastest=Math.max(sA, sB);
-		fastest=Math.max(fastest,sC);
-		if(fastest >100)
-		{
-			slowest=-1;
-		}
-		else
-		{
-			slowest=Math.min(sA,sB);
-			slowest=Math.min(slowest, sC);
-		}
 
-		
+		slowest=Math.min(sA,sB);
+		slowest=Math.min(slowest, sC);
+
+
 		//read in input and assign the table values
-		
+
 		map=new TreeMap<>();
 		//FileReader file;
 		try {
@@ -79,7 +71,7 @@ public class CompetitionDijkstra {
 				slowest=-1;
 			}
 			else {
-				
+
 				boolean endOfFile=false;
 				while(!endOfFile )
 				{
@@ -92,7 +84,7 @@ public class CompetitionDijkstra {
 						int vertexB= Integer.parseInt(lineOutput[1]);
 						double distance=Double.parseDouble(lineOutput[2]) *1000;
 						Node node1,node2;
-						
+
 						if(map.get(vertexA)==null)
 						{
 							node1=new Node(vertexA);
@@ -102,7 +94,7 @@ public class CompetitionDijkstra {
 						{
 							node1=map.get(vertexA);
 						}
-						
+
 						if(map.get(vertexB)==null)
 						{
 							node2=new Node(vertexB);
@@ -112,16 +104,16 @@ public class CompetitionDijkstra {
 						{
 							node2=map.get(vertexB);
 						}
-						
-							node1.addAdjacentNode(node2, distance);
+
+						node1.addAdjacentNode(node2, distance);
 					}
-					
+
 					else 
 					{
 						//filename=null;
 						endOfFile=true;
 					}
-					
+
 				}
 				reader.close();
 			}
@@ -130,82 +122,101 @@ public class CompetitionDijkstra {
 			//System.out.println("excep");
 			slowest=-1;
 			file=false;
-			e.printStackTrace();
+			
 		}
 	}
-    /**
-    * @return int: minimum minutes that will pass before the three contestants can meet
-     */
-    public int timeRequiredforCompetition(){
+	/**
+	 * @return int: minimum minutes that will pass before the three contestants can meet
+	 */
+	public int timeRequiredforCompetition(){
 
-    	//if the speed is out or range return -1
-    	if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sC>100)||file==false || map.size()==0)
-    		return -1;
-    	
-        double maxDistance = -1;
-        //find the max distance 
-        for (Node node : map.values()) {
-            double distance = getMaxCost(node.id);
-            if (distance == Double.MAX_VALUE) return -1;
-            
-            maxDistance = Math.max(maxDistance, distance);
-        }
-        System.out.println(maxDistance + "hereee");
-        int maximumDistance=(int) Math.ceil(maxDistance / slowest);
-        System.out.println("maximumDistance" + maximumDistance);
-        return  maximumDistance;
-    }
+		//if the speed is out or range return -1
+		if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sC>100)||file==false || map.size()==0)
+			return -1;
 
-    private class Node {
-        int id;
-        double cost = Double.MAX_VALUE; //tentative cost
-        ArrayList<Path> paths = new ArrayList<>();
-        
-        Node(int id) {
-            this.id = id;
-        }
+		double maxDistance = -1;
+		//find the max distance 
+		for (Node node : map.values()) {
+			double distance = getMaxCost(node.id);
+			if (distance == Double.MAX_VALUE) return -1;
 
-        void addAdjacentNode(Node node, double cost) {
-            paths.add(new Path(node, cost));
-        }
-    }
+			maxDistance = Math.max(maxDistance, distance);
+		}
+		System.out.println(maxDistance + "hereee");
+		int maximumDistance=(int) Math.ceil(maxDistance / slowest);
+		System.out.println("maximumDistance" + maximumDistance);
+		return  maximumDistance;
+	}
 
-    private class Path {
-        Node destination;
-        double cost;
+	private class Node {
+		int id;
+		double cost = Double.MAX_VALUE;
+		ArrayList<Path> paths = new ArrayList<>();
 
-        Path(Node destination, double cost) {
-            this.destination = destination;
-            this.cost = cost;
-        }
-    }
+		Node(int id) {
+			this.id = id;
+		}
+		//adding nodes that are beside current node
+		void addAdjacentNode(Node node, double cost) {
+			paths.add(new Path(node, cost));
+		}
+	}
 
-    private double getMaxCost(int start) {
+	private class Path {
+		Node destination;
+		double cost;
 
-        LinkedList<Node> nodes = new LinkedList<>();
-        for (Node node : map.values()) {
-            if (node.id == start) node.cost = 0;
-            else node.cost = Double.MAX_VALUE;
-            nodes.add(node);
-        }
+		Path(Node destination, double cost) {
+			this.destination = destination;
+			this.cost = cost;
+		}
+	}
 
-        for (int i = 0; i < map.values().size(); i++) {
-            for (Node node : nodes) {  
-                for (Path path : node.paths) {
-                    double newCost = node.cost + path.cost;
-                    if (newCost < path.destination.cost) {
-                        path.destination.cost = newCost;
-                    }
-                }
-            }
-        }
+	private double getMaxCost(int start) {
+		//get the max cost
+		LinkedList<Node> nodes = new LinkedList<>();
+		for (Node node : map.values()) 
+		{
+			if (node.id == start)  //if the node is the start node its cost is 0 as theres no distance from that node to itself.
+			{
+				node.cost = 0;
+			}
+			else
+			{
+				node.cost = Double.MAX_VALUE;
+			}
+			nodes.add(node);
+		}
 
-        double max = Double.MIN_VALUE;
-        for (Node node : map.values()) {
-            if (node.cost == Double.MAX_VALUE) return node.cost;
-            else if (node.cost > max)
-                max = node.cost;
-        }
-        return max;
-    }
+		for (int i = 0; i < map.values().size(); i++)
+		{
+			for (int j=0; j<nodes.size(); j++)//(Node node : nodes)
+			{  
+				for (Path path : nodes.get(j).paths) 
+				{
+					double newCost = nodes.get(j).cost + path.cost;
+					if (newCost < path.destination.cost) 
+					{
+						path.destination.cost = newCost;
+					}
+				}
+			}
+		}
+		
+		double max =Double.MIN_VALUE;
+		for (int i=0 ; i<nodes.size(); i++)//(Node node : map.values()) 
+		{
+			
+			if (nodes.get(i).cost == Double.MAX_VALUE) 
+			{
+				return nodes.get(i).cost;
+			}
+			else if (nodes.get(i).cost > max)
+			{
+				max = nodes.get(i).cost;
+			}
+				
+		}
+		return max;
+	}
 }

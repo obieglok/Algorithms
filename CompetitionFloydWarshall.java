@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+//@Author Klaudia Obieglo, discussed with the demonstrator Kamil Przepiorski,
+//Looked at github repos, aglorithm book ,stack overflow
 /*
  * A Contest to Meet (ACM) is a reality TV contest that sets three contestants at three random
  * city intersections. In order to win, the three contestants need all to meet at any intersection
@@ -21,14 +23,14 @@ public class CompetitionFloydWarshall {
 
 	int sA,sB,sC;
 	String filename;
-	int intersections,streets,slowest,fastest;
+	int intersections,streets,slowest;
 	double table[][];
 	boolean validFile=true;
 	private static final double INFINITY = Integer.MAX_VALUE; 
 	/**
 	 * @param filename: A filename containing the details of the city road network
 	 * @param sA, sB, sC: speeds for 3 contestants
-	 
+
 	 */
 	CompetitionFloydWarshall (String filename, int sA, int sB, int sC){
 		//setting up the constructor
@@ -37,24 +39,16 @@ public class CompetitionFloydWarshall {
 		this.sB=sB;
 		this.sC=sC;
 		this.initalise();
-		
+
 
 	}
 
 	public void initalise()
 	{
-		fastest=Math.max(sA, sB);
-		fastest=Math.max(fastest,sC);
-		if(fastest >100)
-		{
-			slowest=-1;
-			
-		}
-		else
-		{
-			slowest=Math.min(sA,sB);
-			slowest=Math.min(slowest, sC);
-		}
+
+		slowest=Math.min(sA,sB);
+		slowest=Math.min(slowest, sC);
+
 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
@@ -83,10 +77,10 @@ public class CompetitionFloydWarshall {
 							table[i][j]=0;
 						}
 						else {
-							 
+
 							table[i][j]=INFINITY;
 						}
-						
+
 					}
 				}
 				boolean endOfFile=false;
@@ -102,21 +96,21 @@ public class CompetitionFloydWarshall {
 					}
 					else 
 					{
-						
+
 						endOfFile=true;
 					}
-					
+
 				}
 				reader.close();
 			}
 		} catch (Exception e) {
 			validFile=false;
 			slowest=-1;
-			
+
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 		}  
-		
+
 
 	}
 
@@ -140,15 +134,15 @@ public class CompetitionFloydWarshall {
 			}
 		}
 		double maximumDistance=getMax();
-	//	System.out.println("slowrst"+slowest + " maxdist" + maximumDistance);
+		//	System.out.println("slowrst"+slowest + " maxdist" + maximumDistance);
 		//System.out.println("max distnace"+(maximumDistance*1000)/slowest);
 		if(maximumDistance == INFINITY)
 		{
-	//		System.out.println("shouldnt be hee");
+			//		System.out.println("shouldnt be hee");
 			return -1;
 		}
 		maximumDistance=maximumDistance*1000;
-	//	System.out.println("maximumDistanceAttheEnd");
+		//	System.out.println("maximumDistanceAttheEnd");
 		return (int)Math.ceil(maximumDistance/slowest);
 	}
 	public double getMax()
