@@ -21,7 +21,7 @@ public class CompetitionFloydWarshall {
 
 	int sA,sB,sC;
 	String filename;
-	int intersections,streets,slowest;
+	int intersections,streets,slowest,fastest;
 	double table[][];
 	boolean validFile=true;
 	private static final double INFINITY = Integer.MAX_VALUE; 
@@ -42,10 +42,18 @@ public class CompetitionFloydWarshall {
 
 	public void initalise()
 	{
-		//read in input and assign the table values
-		//System.out.print("w");
-		slowest=Math.min(sA,sB);
-		slowest=Math.min(slowest, sC);
+		fastest=Math.max(sA, sB);
+		fastest=Math.max(fastest,sC);
+		if(fastest >100)
+		{
+			slowest=-1;
+		}
+		else
+		{
+			slowest=Math.min(sA,sB);
+			slowest=Math.min(slowest, sC);
+		}
+
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			String input =reader.readLine();

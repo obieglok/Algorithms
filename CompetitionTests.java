@@ -10,6 +10,8 @@ public class CompetitionTests {
     public void testDijkstraConstructor(){
         CompetitionDijkstra dijkstra = new CompetitionDijkstra("tinyEWD.txt", 70,60,50);
         assertEquals("constructor testing", dijkstra.slowest, 50);
+        CompetitionDijkstra dijkstraA = new CompetitionDijkstra("tinyEWD.txt", 110,60,50);
+        assertEquals("constructor testing", dijkstraA.slowest, -1);
     }
     @Test
     public void testDijkstra()
@@ -31,6 +33,8 @@ public class CompetitionTests {
     public void testFWConstructor() {
     	CompetitionFloydWarshall floyWar = new CompetitionFloydWarshall("tinyEWD.txt", 70,60,84);
         assertEquals("constructor testing", floyWar.slowest, 60);
+    	CompetitionFloydWarshall floyWarA = new CompetitionFloydWarshall("tinyEWD.txt", 110,60,84);
+        assertEquals("constructor testing", floyWarA.slowest, -1);
     }
     
     @Test

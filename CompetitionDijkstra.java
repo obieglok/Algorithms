@@ -30,7 +30,7 @@ public class CompetitionDijkstra {
 	private static final double INFINITY = Integer.MAX_VALUE; 
 	int sA,sB,sC;
 	String filename;
-	int intersections,streets,slowest;
+	int intersections,streets,slowest,fastest;
 	private TreeMap<Integer,Node> map;
 	boolean file=true;
 	/**
@@ -50,8 +50,18 @@ public class CompetitionDijkstra {
 
 	public void initialise()
 	{
-		slowest=Math.min(sA,sB);
-		slowest=Math.min(slowest, sC);
+		fastest=Math.max(sA, sB);
+		fastest=Math.max(fastest,sC);
+		if(fastest >100)
+		{
+			slowest=-1;
+		}
+		else
+		{
+			slowest=Math.min(sA,sB);
+			slowest=Math.min(slowest, sC);
+		}
+
 		
 		//read in input and assign the table values
 		
