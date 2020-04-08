@@ -139,7 +139,7 @@ public class CompetitionDijkstra {
     public int timeRequiredforCompetition(){
 
     	//if the speed is out or range return -1
-    	if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sB>100)||file==false || map.size()==0)
+    	if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sC>100)||file==false || map.size()==0)
     		return -1;
     	
         double maxDistance = -1;

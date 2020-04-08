@@ -37,6 +37,7 @@ public class CompetitionFloydWarshall {
 		this.sB=sB;
 		this.sC=sC;
 		this.initalise();
+		
 
 	}
 
@@ -47,6 +48,7 @@ public class CompetitionFloydWarshall {
 		if(fastest >100)
 		{
 			slowest=-1;
+			
 		}
 		else
 		{
@@ -124,7 +126,7 @@ public class CompetitionFloydWarshall {
 	public int timeRequiredforCompetition(){
 
 		//if the speed is out or range  or file is null return -1
-		if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sB>100) || validFile==false)
+		if((sA<50 ||sA >100) || (sB >100 || sB<50) || (sC <50 || sC>100) || validFile==false)
 			return -1;
 
 		//floydWarshall Algorithm
