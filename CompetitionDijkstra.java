@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 //@Author Klaudia Obieglo, discussed with the demonstrator Kamil Przepiorski,
-// Looked at github repos, aglorithm book ,stack overflow
+// Looked at  aglorithm book ,stack overflow, youtube, github
 /*
  * A Contest to Meet (ACM) is a reality TV contest that sets three contestants at three random
  * city intersections. In order to win, the three contestants need all to meet at any intersection
@@ -50,14 +50,10 @@ public class CompetitionDijkstra {
 
 	public void initialise()
 	{
-
+		map=new TreeMap<>();
 		slowest=Math.min(sA,sB);
 		slowest=Math.min(slowest, sC);
 
-
-		//read in input and assign the table values
-
-		map=new TreeMap<>();
 		//FileReader file;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
@@ -80,29 +76,29 @@ public class CompetitionDijkstra {
 					{
 						//split the line which has startVertex->EndVertex, Distance
 						String[] lineOutput=input.trim().split(" ");
-						int vertexA=Integer.parseInt(lineOutput[0]);
-						int vertexB= Integer.parseInt(lineOutput[1]);
-						double distance=Double.parseDouble(lineOutput[2]) *1000;
+						int startVertex=Integer.parseInt(lineOutput[0]);
+						int endVertex= Integer.parseInt(lineOutput[1]);
+						double distance=Double.parseDouble(lineOutput[2]) *1000; //make distance more measurable
 						Node node1,node2;
 
-						if(map.get(vertexA)==null)
+						if(map.get(startVertex)==null)
 						{
-							node1=new Node(vertexA);
-							map.put(vertexA, node1);
+							node1=new Node(startVertex);
+							map.put(startVertex, node1);
 						}
 						else
 						{
-							node1=map.get(vertexA);
+							node1=map.get(startVertex);
 						}
 
-						if(map.get(vertexB)==null)
+						if(map.get(endVertex)==null)
 						{
-							node2=new Node(vertexB);
-							map.put(vertexB, node2);
+							node2=new Node(endVertex);
+							map.put(endVertex, node2);
 						}
 						else
 						{
-							node2=map.get(vertexB);
+							node2=map.get(endVertex);
 						}
 
 						node1.addAdjacentNode(node2, distance);
@@ -138,27 +134,30 @@ public class CompetitionDijkstra {
 		//find the max distance 
 		for (Node node : map.values()) {
 			double distance = getMaxCost(node.id);
-			if (distance == Double.MAX_VALUE) return -1;
+			if (distance == Double.MAX_VALUE) 
+			{
+				return -1;
+			}
 
 			maxDistance = Math.max(maxDistance, distance);
 		}
-		System.out.println(maxDistance + "hereee");
+		//System.out.println(maxDistance + "hereee");
 		int maximumDistance=(int) Math.ceil(maxDistance / slowest);
-		System.out.println("maximumDistance" + maximumDistance);
+		//System.out.println("maximumDistance" + maximumDistance);
 		return  maximumDistance;
 	}
 
 	private class Node {
 		int id;
 		double cost = Double.MAX_VALUE;
-		ArrayList<Path> paths = new ArrayList<>();
+		ArrayList<Path> pathways = new ArrayList<>();
 
 		Node(int id) {
 			this.id = id;
 		}
 		//adding nodes that are beside current node
 		void addAdjacentNode(Node node, double cost) {
-			paths.add(new Path(node, cost));
+			pathways.add(new Path(node, cost));
 		}
 	}
 
@@ -175,6 +174,7 @@ public class CompetitionDijkstra {
 	private double getMaxCost(int start) {
 		//get the max cost
 		LinkedList<Node> nodes = new LinkedList<>();
+		//set nodes to be double max unless they are the starting node
 		for (Node node : map.values()) 
 		{
 			if (node.id == start)  //if the node is the start node its cost is 0 as theres no distance from that node to itself.
@@ -187,12 +187,12 @@ public class CompetitionDijkstra {
 			}
 			nodes.add(node);
 		}
-
+		//get the destination cost for each node
 		for (int i = 0; i < map.values().size(); i++)
 		{
-			for (int j=0; j<nodes.size(); j++)//(Node node : nodes)
+			for (int j=0; j<nodes.size(); j++)
 			{  
-				for (Path path : nodes.get(j).paths) 
+				for (Path path : nodes.get(j).pathways) 
 				{
 					double newCost = nodes.get(j).cost + path.cost;
 					if (newCost < path.destination.cost) 
@@ -204,7 +204,7 @@ public class CompetitionDijkstra {
 		}
 		
 		double max =Double.MIN_VALUE;
-		for (int i=0 ; i<nodes.size(); i++)//(Node node : map.values()) 
+		for (int i=0 ; i<nodes.size(); i++)
 		{
 			
 			if (nodes.get(i).cost == Double.MAX_VALUE) 
